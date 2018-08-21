@@ -9,9 +9,9 @@ import java.util.HashMap;
  *
  * NXTeleManager is a convenience class for managing telemetry data and keeping it up to date.
  *
- * There should be only one instance of TeleManager running at any one point in time. Have the
- * OpMode pass its own instance of TeleManager to any class it instantiates which requires access
- * to telemetry.
+ * TeleManager is a singleton. You do not need to know what that means or why that is, but you do
+ * need to know that TeleManager is available on a global scope without being a global variable.
+ * Get an instance of TeleManager as follows: private NXTeleManager t = NXTeleManager.getInstance();
  */
 
 public class NXTeleManager {
@@ -23,8 +23,19 @@ public class NXTeleManager {
 
     public String name = "Telemetry Manager";
 
+    private static NXTeleManager Instance;
+
+    public static NXTeleManager getInstance() {
+        return Instance;
+    }
+
+    public static NXTeleManager init(Telemetry t) {
+        Instance = new NXTeleManager(t);
+        return Instance;
+    }
+
     //Central methods
-    public NXTeleManager(Telemetry telem) {
+    private NXTeleManager(Telemetry telem) {
         telemetry = telem;
         Telemetry.Line l = telemetry.addLine();
         lineList.put("status", l.addData("Telemetry Manager: ", "Online"));
